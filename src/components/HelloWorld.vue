@@ -10,7 +10,7 @@ import PowerSphere from '../assets/powerSphereBeggar/index'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
-
+import * as TWEEN from '@tweenjs/tween.js'
 import { Reflector } from './Reflector';
 
 const Bol3D = THREE
@@ -1121,7 +1121,7 @@ export default {
       textureHeight: window.innerHeight * window.devicePixelRatio,
       blur: 0.3
     });
-    console.log('reflector: ', reflector);
+
     reflector.position.set(0, 50, 0)
 
     const transformControls = new TransformControls(camera, renderer.domElement)
@@ -1129,9 +1129,65 @@ export default {
       controls.enabled = !event.value;
     });
     scene.add(transformControls)
-    transformControls.attach(reflector)
+    // transformControls.attach(reflector)
     // 将反射器添加到场景中
     scene.add(reflector);
+
+
+    // ========================================================================
+    // tween
+    window.THREE = THREE
+
+    const geo5 = new THREE.BoxGeometry(10, 10, 10)
+    const mat5 = new THREE.MeshBasicMaterial({ color: 0x00ffff })
+    const box5 = new THREE.Mesh(geo5, mat5)
+    scene.add(box5)
+    box5.position.set(100, 10, 50)
+    // transformControls.attach(box5)
+
+    const geo6 = new THREE.BoxGeometry(10, 10, 10)
+    const mat6 = new THREE.MeshBasicMaterial({ color: 0xff00ff })
+    const box6 = new THREE.Mesh(geo6, mat6)
+    scene.add(box6)
+    box6.position.set(120, 10, -120)
+
+    const tween1 = new TWEEN.Tween(box6.position)
+    tween1.to(box5.position)
+    tween1.dynamic(true)
+    tween1.easing(TWEEN.Easing.Quadratic.InOut)
+    tween1.duration(3000)
+    tween1.start()
+
+    // const tween2 = new TWEEN.Tween(box5.position)
+    // tween2.to({
+    //   x: -50
+    // })
+    // tween2.duration(3000)
+    // tween2.start()
+
+    // ========================================================================
+    // xx
+
+    const loader2 = new GLTFLoader();
+    const dracoLoader2 = new DRACOLoader();
+    dracoLoader2.setDecoderPath('/draco/');
+    loader2.setDRACOLoader(dracoLoader2);
+
+    // Load a glTF resource
+    loader2.load(
+      // resource URL
+      '/FOSB.glb',
+      // called when the resource is loaded
+      function (gltf) {
+        console.log('gltf: ', gltf);
+        gltf.scene.scale.set(50, 50, 50)
+        gltf.scene.position.set(0, 0, 2)
+
+        scene.add(gltf.scene)
+
+        transformControls.attach(gltf.scene)
+      }
+    )
 
 
     // ========================================================================
@@ -1143,6 +1199,7 @@ export default {
     render();
     function render() {
 
+      TWEEN.update()
       renderer.setAnimationLoop(render);
       dt = clock.getElapsedTime()
       // dt = clock.getDelta()

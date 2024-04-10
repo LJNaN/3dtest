@@ -1,12 +1,13 @@
 
 <template>
-  <HelloWorld />
+  <HelloWorld3 />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 import HelloWorld2 from './components/HelloWorld2.vue'
+import HelloWorld3 from './components/HelloWorld3.vue'
 
 
 
